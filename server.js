@@ -9,7 +9,7 @@ app.get("/blogs", api.listBlog);
 app.post("/blogs", api.createBlog);
 app.put("/blogs/:id", api.editBlog);
 app.delete("/blogs/:id", api.deleteBlog);
-
+app.post("/author", api.createAuthor);
 const port = process.env.PORT || 1337;
 
 app.listen(port);

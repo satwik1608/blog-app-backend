@@ -1,17 +1,23 @@
 const db = require("../db");
 const cuid = require("cuid");
 
+const bcrypt = require("bcrypt");
+const SALT_ROUNDS = 10;
+
 module.exports = {
   create,
 };
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
-  name: { type: String },
+  name: { type: String, required: true },
+  username: { type: String, required: true },
+  email: { type: String, required: true },
   category: [
     {
       type: String,
     },
   ],
+  password: { type: String, required: true },
   rating: { type: Number },
   imgThumb: { type: String },
   img: { type: String },
@@ -27,17 +33,16 @@ const authorSchema = new db.Schema({
 
 const Author = db.model("Author", authorSchema);
 
-async function create() {
-  const author = new Author({
-    name: "Satwik",
-    category: ["Anime", "Action"],
-    rating: "5",
-    description: " Really good anime blogger ",
-    blogs: ["clb9btodg0000louucjmubrhq"],
-  });
+async function create(fields) {
+  const author = new Author(fields);
 
-  const result = await author.save();
-  await result.populate("blogs");
+  await hashPassword(author);
 
-  console.log(result);
+  await author.save();
+
+  return author;
+}
+
+async function hashPassword(author) {
+  author.password = await bcrypt.hash(author.password, SALT_ROUNDS);
 }

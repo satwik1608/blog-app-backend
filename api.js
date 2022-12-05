@@ -1,10 +1,12 @@
 const Blog = require("./models/blog");
+const Author = require("./models/author");
 
 module.exports = {
   createBlog,
   listBlog,
   editBlog,
   deleteBlog,
+  createAuthor,
 };
 async function createBlog(req, res) {
   const blog = await Blog.create(req.body);
@@ -28,4 +30,10 @@ async function editBlog(req, res) {
 async function deleteBlog(req, res) {
   await Blog.remove(req.params.id);
   res.json({ success: true });
+}
+
+async function createAuthor(req, res) {
+  const author = await Author.create(req.body);
+
+  res.json(author);
 }
