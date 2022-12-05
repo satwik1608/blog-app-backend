@@ -21,7 +21,6 @@ const authorSchema = new db.Schema({
       type: String,
       ref: "Blog",
       index: true,
-      require: true,
     },
   ],
 });
