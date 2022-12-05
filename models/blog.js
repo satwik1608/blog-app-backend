@@ -1,5 +1,7 @@
 const db = require("../db");
 
+const Author = require("./author");
+
 const cuid = require("cuid");
 
 module.exports = {
@@ -7,6 +9,7 @@ module.exports = {
   edit,
   list,
   remove,
+  find,
 };
 const blogSchema = new db.Schema({
   _id: { type: String, default: cuid },
@@ -19,7 +22,19 @@ const blogSchema = new db.Schema({
   ],
   img: { type: String },
   likes: { type: Number, default: 0 },
-  author: { type: String },
+  author: {
+    type: String,
+    ref: "Author",
+    index: true,
+    require: true,
+  },
+  comments: [
+    {
+      type: String,
+      ref: "Comment",
+      index: true,
+    },
+  ],
   rating: { type: Number, default: 0.0 },
   content: { type: String },
   date: { type: Date, default: Date() },
@@ -28,7 +43,18 @@ const blogSchema = new db.Schema({
 const Blog = db.model("Blog", blogSchema);
 
 async function create(fields) {
-  const blog = await new Blog(fields).save();
+  const blog = new Blog(fields);
+
+  await blog.populate("author");
+
+  const author = await Author.find(fields.author);
+
+  author.blogs.push(blog._id);
+
+  await author.save();
+
+  await blog.save();
+
   return blog;
 }
 
@@ -54,4 +80,8 @@ async function edit(id, change) {
 
 async function remove(id) {
   await Blog.deleteOne({ _id: id });
+}
+
+async function find(id) {
+  return await Blog.findById(id);
 }

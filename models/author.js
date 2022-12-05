@@ -6,6 +6,7 @@ const SALT_ROUNDS = 10;
 
 module.exports = {
   create,
+  find,
 };
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
@@ -41,6 +42,29 @@ async function create(fields) {
   await author.save();
 
   return author;
+}
+
+async function find(id) {
+  const author = Author.findById(id);
+
+  return author;
+}
+
+async function edit(id, change) {
+  const author = Author.findById(id);
+
+  Object.keys(change).forEach(function (key) {
+    author[key] = change[key];
+  });
+
+  await author.save();
+
+  res.json(author);
+}
+
+async function remove(id) {
+  await Author.findOneAndRemove({ id });
+  res.json({ success: true });
 }
 
 async function hashPassword(author) {
