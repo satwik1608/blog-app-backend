@@ -53,5 +53,5 @@ async function edit(id, change) {
 }
 
 async function remove(id) {
-  await Blog.deleteOne({ id });
+  await Blog.deleteOne({ _id: id });
 }
