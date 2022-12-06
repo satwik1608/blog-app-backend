@@ -3,6 +3,7 @@ const Blog = require("./blog");
 
 module.exports = {
   create,
+  remove,
 };
 const commentSchema = new db.Schema({
   data: { type: String },
@@ -27,13 +28,17 @@ async function create(fields) {
 
   await comment.populate("blog author");
 
-  const blog = await Blog.find(fields.blog);
+  const blogs = await Blog.find(fields.blog);
 
-  blog.comments.push(comment._id);
+  blogs.comments.push(comment._id);
 
-  await blog.save();
+  await blogs.save();
 
   await comment.save();
 
   return comment;
+}
+
+async function remove(id) {
+  await Comment.findOneAndDelete({ _id: id });
 }

@@ -79,9 +79,19 @@ async function edit(id, change) {
 }
 
 async function remove(id) {
+  const blog = await get(id);
+
+  const author = await Author.find(blog.author);
+
+  author.blogs.remove(blog._id); // remove that blog under the authors list
+
+  await author.save();
+
   await Blog.deleteOne({ _id: id });
 }
 
 async function find(id) {
-  return await Blog.findById(id);
+  const blog = await Blog.findById(id);
+
+  return blog;
 }

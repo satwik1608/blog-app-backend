@@ -45,7 +45,7 @@ async function create(fields) {
 }
 
 async function find(id) {
-  const author = Author.findById(id);
+  const author = await Author.findById(id);
 
   return author;
 }
@@ -63,7 +63,7 @@ async function edit(id, change) {
 }
 
 async function remove(id) {
-  await Author.findOneAndRemove({ id });
+  await Author.findOneAndRemove({ _id: id });
   res.json({ success: true });
 }
 
