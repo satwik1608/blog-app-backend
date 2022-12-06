@@ -11,7 +11,8 @@ app.put("/blogs/:id", api.editBlog);
 app.delete("/blogs/:id", api.deleteBlog);
 app.post("/author", api.createAuthor);
 app.post("/comments", api.createComment);
-
+app.post("/follow/:id", api.followAuthor);
+app.post("/unfollow/:id", api.unfollowAuthor);
 const port = process.env.PORT || 1337;
 
 app.listen(port);

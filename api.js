@@ -8,6 +8,8 @@ module.exports = {
   deleteBlog,
   createAuthor,
   createComment,
+  followAuthor,
+  unfollowAuthor,
 };
 async function createBlog(req, res) {
   const blog = await Blog.create(req.body);
@@ -43,4 +45,15 @@ async function createComment(req, res) {
   const comment = await Comment.create(req.body);
 
   res.json(comment);
+}
+
+async function followAuthor(req, res) {
+  const author = await Author.follow(req.body.id, req.params.id);
+
+  res.json(author);
+}
+
+async function unfollowAuthor(req, res) {
+  const author = await Author.unfollow(req.body.id, req.params.id);
+  res.json(author);
 }

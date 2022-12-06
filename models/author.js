@@ -7,6 +7,8 @@ const SALT_ROUNDS = 10;
 module.exports = {
   create,
   find,
+  follow,
+  unfollow,
 };
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
@@ -30,6 +32,8 @@ const authorSchema = new db.Schema({
       index: true,
     },
   ],
+  following: [{ type: String, ref: "Author", index: true }],
+  followers: [{ type: String, ref: "Author", index: true }],
 });
 
 const Author = db.model("Author", authorSchema);
@@ -69,4 +73,22 @@ async function remove(id) {
 
 async function hashPassword(author) {
   author.password = await bcrypt.hash(author.password, SALT_ROUNDS);
+}
+
+async function follow(id1, id2) {
+  const author = await Author.findById(id1);
+
+  author.following.push(id2);
+  await author.save();
+  return author;
+}
+
+async function unfollow(id1, id2) {
+  const author = await Author.findById(id1);
+
+  author.following.remove(id2);
+
+  await author.save();
+
+  return author;
 }
