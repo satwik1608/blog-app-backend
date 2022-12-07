@@ -9,6 +9,7 @@ module.exports = {
   find,
   follow,
   unfollow,
+  get,
 };
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
@@ -38,6 +39,10 @@ const authorSchema = new db.Schema({
 
 const Author = db.model("Author", authorSchema);
 
+async function get(username) {
+  const author = await Author.findOne({ username });
+  return author;
+}
 async function create(fields) {
   const author = new Author(fields);
 

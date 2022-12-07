@@ -17,7 +17,6 @@ const blogSchema = new db.Schema({
   tags: [
     {
       type: String,
-      required: true,
     },
   ],
   img: { type: String },

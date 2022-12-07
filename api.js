@@ -1,6 +1,7 @@
 const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
+const auth = require("./auth");
 module.exports = {
   createBlog,
   listBlog,
