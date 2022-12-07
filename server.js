@@ -13,12 +13,12 @@ app.post("/login", auth.authenticate, auth.login);
 
 app.get("/blogs", api.listBlog);
 app.post("/blogs", auth.ensureUser, api.createBlog);
-app.put("/blogs/:id", api.editBlog);
-app.delete("/blogs/:id", api.deleteBlog);
+app.put("/blogs/:id", auth.ensureUser, api.editBlog);
+app.delete("/blogs/:id", auth.ensureUser, api.deleteBlog);
 app.post("/author", api.createAuthor);
-app.post("/comments", api.createComment);
-app.post("/follow/:id", api.followAuthor);
-app.post("/unfollow/:id", api.unfollowAuthor);
+app.post("/comments", auth.ensureUser, api.createComment);
+app.post("/follow/:id", auth.ensureUser, api.followAuthor);
+app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
 
 app.use(middleware.handleValidationError);
 app.use(middleware.handleError);

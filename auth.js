@@ -4,7 +4,7 @@ const passport = require("passport");
 const Strategy = require("passport-local").Strategy;
 
 const Author = require("./models/author");
-
+const tokenkey = "token";
 const jwtSecret = process.env.JWT_SECRET || "mark it zero";
 const adminPassword = process.env.ADMIN_PASSWORD || "iamthewalrus";
 const jwtOpts = { algorithm: "HS256", expiresIn: "30d" };
@@ -20,7 +20,6 @@ module.exports = {
 
 async function login(req, res, next) {
   const token = await sign({ username: req.user.username });
-
   res.cookie("jwt", token, { httpOnly: true });
   res.json({ success: true, token: token });
 }
@@ -28,7 +27,7 @@ async function login(req, res, next) {
 async function ensureUser(req, res, next) {
   const jwtString = req.headers.authorization || req.cookies.jwt;
   const payload = await verify(jwtString);
-  console.log(payload);
+
   if (payload.username) {
     req.user = payload;
     if (req.user.username === "admin") req.isAdmin = true;

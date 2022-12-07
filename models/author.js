@@ -33,6 +33,7 @@ const authorSchema = new db.Schema({
       index: true,
     },
   ],
+  lists: [{ type: String, ref: "Blog", index: true }],
   following: [{ type: String, ref: "Author", index: true }],
   followers: [{ type: String, ref: "Author", index: true }],
 });

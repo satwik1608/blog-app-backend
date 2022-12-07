@@ -12,7 +12,7 @@ module.exports = {
   followAuthor,
   unfollowAuthor,
 };
-async function createBlog(req, res) {
+async function createBlog(req, res, next) {
   const blog = await Blog.create(req.body);
   res.json(blog);
 }
@@ -57,4 +57,10 @@ async function followAuthor(req, res) {
 async function unfollowAuthor(req, res) {
   const author = await Author.unfollow(req.body.id, req.params.id);
   res.json(author);
+}
+
+function forbidden(next) {
+  const err = new Error("Forbidden");
+  err.statusCode = 403;
+  return next(err);
 }
