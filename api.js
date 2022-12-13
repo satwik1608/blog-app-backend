@@ -7,7 +7,9 @@ module.exports = {
   listBlog,
   editBlog,
   deleteBlog,
+  getBlog,
   createAuthor,
+  getAuthor,
   createComment,
   followAuthor,
   unfollowAuthor,
@@ -21,6 +23,12 @@ async function listBlog(req, res) {
   const blogs = await Blog.list();
 
   res.json(blogs);
+}
+
+async function getBlog(req, res) {
+  const blog = await Blog.get(req.params.id);
+
+  res.json(blog);
 }
 
 async function editBlog(req, res) {
@@ -39,6 +47,11 @@ async function deleteBlog(req, res) {
 async function createAuthor(req, res) {
   const author = await Author.create(req.body);
 
+  res.json(author);
+}
+
+async function getAuthor(req, res) {
+  const author = await Author.find(req.params.id);
   res.json(author);
 }
 

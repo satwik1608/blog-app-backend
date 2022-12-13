@@ -16,6 +16,7 @@ const authorSchema = new db.Schema({
   name: { type: String, required: true },
   username: { type: String, required: true },
   email: { type: String, required: true },
+  profession: { type: String },
   category: [
     {
       type: String,
@@ -55,9 +56,11 @@ async function create(fields) {
 }
 
 async function find(id) {
-  const author = await Author.findById(id);
-
-  return author;
+  return await Author.findById(id)
+    .populate("followers")
+    .populate("following")
+    .populate("blogs")
+    .exec();
 }
 
 async function edit(id, change) {
@@ -85,6 +88,13 @@ async function follow(id1, id2) {
   const author = await Author.findById(id1);
 
   author.following.push(id2);
+  const author2 = await Author.findById(id2);
+  author2.followers.push(id1);
+
+  await author.populate("following");
+  await author2.populate("followers");
+
+  await author2.save();
   await author.save();
   return author;
 }

@@ -8,6 +8,7 @@ module.exports = {
   create,
   edit,
   list,
+  get,
   remove,
   find,
 };
@@ -27,6 +28,7 @@ const blogSchema = new db.Schema({
     index: true,
     require: true,
   },
+
   comments: [
     {
       type: String,
@@ -44,7 +46,7 @@ const Blog = db.model("Blog", blogSchema);
 async function create(fields) {
   const blog = new Blog(fields);
 
-  await blog.populate("author").exec();
+  await blog.populate("author");
 
   const author = await Author.find(fields.author);
 
@@ -58,13 +60,7 @@ async function create(fields) {
 }
 
 async function list() {
-  const blogs = await Blog.find();
-
-  blogs.forEach(async (blog) => {
-    await blog.populate("author").exec();
-  });
-
-  return blogs;
+  return await Blog.find().populate({ path: "author", select: "name" }).exec();
 }
 
 async function get(id) {
