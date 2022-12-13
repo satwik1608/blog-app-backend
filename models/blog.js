@@ -44,7 +44,7 @@ const Blog = db.model("Blog", blogSchema);
 async function create(fields) {
   const blog = new Blog(fields);
 
-  await blog.populate("author");
+  await blog.populate("author").exec();
 
   const author = await Author.find(fields.author);
 
@@ -58,7 +58,13 @@ async function create(fields) {
 }
 
 async function list() {
-  return await Blog.find();
+  const blogs = await Blog.find();
+
+  blogs.forEach(async (blog) => {
+    await blog.populate("author").exec();
+  });
+
+  return blogs;
 }
 
 async function get(id) {
