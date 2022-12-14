@@ -4,6 +4,8 @@ const Blog = require("./blog");
 module.exports = {
   create,
   remove,
+  get,
+  update,
 };
 const commentSchema = new db.Schema({
   data: { type: String },
@@ -18,6 +20,9 @@ const commentSchema = new db.Schema({
     ref: "Author",
     index: true,
     rerquired: true,
+  },
+  reply: {
+    type: String,
   },
 });
 
@@ -37,6 +42,26 @@ async function create(fields) {
   await comment.save();
 
   return comment;
+}
+
+async function update(change, id) {
+  const comment = await Comment.findById(id);
+
+  Object.keys(change).forEach(function (key) {
+    comment[key] = change[key];
+  });
+
+  await comment.save();
+
+  return comment;
+}
+
+async function get() {
+  return await Comment.find()
+    .populate("author")
+    .populate("blog")
+    .populate("reply")
+    .exec();
 }
 
 async function remove(id) {

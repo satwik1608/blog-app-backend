@@ -5,6 +5,8 @@ const app = express();
 // const auth = require("./auth");
 const middleware = require("./middleware");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+app.use(cors());
 app.use(express.json());
 
 app.use(middleware.cors);
@@ -19,7 +21,9 @@ app.put("/blogs/:id", api.editBlog);
 app.delete("/blogs/:id", api.deleteBlog);
 app.post("/author", api.createAuthor);
 app.get("/author/:id", api.getAuthor);
+app.get("/comments", api.getComment);
 app.post("/comments", api.createComment);
+app.put("/comments/:id", api.updateComment);
 app.post("/follow/:id", api.followAuthor);
 app.post("/unfollow/:id", api.unfollowAuthor);
 

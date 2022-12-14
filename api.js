@@ -10,7 +10,9 @@ module.exports = {
   getBlog,
   createAuthor,
   getAuthor,
+  getComment,
   createComment,
+  updateComment,
   followAuthor,
   unfollowAuthor,
 };
@@ -54,9 +56,20 @@ async function getAuthor(req, res) {
   const author = await Author.find(req.params.id);
   res.json(author);
 }
+async function getComment(req, res) {
+  const comments = await Comment.get();
 
+  res.json(comments);
+}
 async function createComment(req, res) {
+  console.log(req.body);
   const comment = await Comment.create(req.body);
+
+  res.json(comment);
+}
+
+async function updateComment(req, res) {
+  const comment = await Comment.update(req.body, req.params.id);
 
   res.json(comment);
 }
