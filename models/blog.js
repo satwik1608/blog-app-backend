@@ -36,7 +36,7 @@ const blogSchema = new db.Schema({
       index: true,
     },
   ],
-  rating: { type: Number, default: 0.0 },
+  likes: { type: Number, default: 0 },
   content: { type: String },
   date: { type: Date, default: Date() },
 });

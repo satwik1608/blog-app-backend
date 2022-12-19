@@ -10,6 +10,7 @@ module.exports = {
   follow,
   unfollow,
   get,
+  list,
 };
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
@@ -42,9 +43,12 @@ const authorSchema = new db.Schema({
 const Author = db.model("Author", authorSchema);
 
 async function get(username) {
-  const author = await Author.findOne({ username });
-  return author;
+  if (username) {
+    const author = await Author.findOne({ username });
+    return author;
+  }
 }
+
 async function create(fields) {
   const author = new Author(fields);
 
@@ -63,6 +67,19 @@ async function find(id) {
     .exec();
 }
 
+async function list(search) {
+  const data = await Author.find()
+    .populate("followers")
+    .populate("following")
+    .populate("blogs")
+    .exec();
+  console.log(search);
+  const author = data.filter((a) =>
+    a.name.toLowerCase().startsWith(search.toLowerCase())
+  );
+
+  return author;
+}
 async function edit(id, change) {
   const author = Author.findById(id);
 

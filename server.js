@@ -20,7 +20,9 @@ app.post("/blogs", api.createBlog);
 app.put("/blogs/:id", api.editBlog);
 app.delete("/blogs/:id", api.deleteBlog);
 app.post("/author", api.createAuthor);
+app.get("/authors", api.getAuthors);
 app.get("/author/:id", api.getAuthor);
+
 app.get("/comments", api.getComment);
 app.post("/comments", api.createComment);
 app.put("/comments/:id", api.updateComment);

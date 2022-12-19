@@ -1,6 +1,7 @@
 const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
+
 const auth = require("./auth");
 module.exports = {
   createBlog,
@@ -10,13 +11,14 @@ module.exports = {
   getBlog,
   createAuthor,
   getAuthor,
+  getAuthors,
   getComment,
   createComment,
   updateComment,
   followAuthor,
   unfollowAuthor,
 };
-async function createBlog(req, res, next) {
+async function createBlog(req, res) {
   const blog = await Blog.create(req.body);
   res.json(blog);
 }
@@ -55,6 +57,14 @@ async function createAuthor(req, res) {
 async function getAuthor(req, res) {
   const author = await Author.find(req.params.id);
   res.json(author);
+}
+
+async function getAuthors(req, res) {
+  const { search } = req.query;
+  console.log(search);
+  const authors = await Author.list(search);
+
+  res.json(authors);
 }
 async function getComment(req, res) {
   const comments = await Comment.get();
