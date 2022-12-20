@@ -7,7 +7,7 @@ const Author = require("./models/author");
 const tokenkey = "token";
 const jwtSecret = process.env.JWT_SECRET || "mark it zero";
 const adminPassword = process.env.ADMIN_PASSWORD || "iamthewalrus";
-const jwtOpts = { algorithm: "HS256", expiresIn: "30d" };
+const jwtOpts = { algorithm: "HS256", expiresIn: "1d" };
 
 passport.use(adminStrategy());
 const authenticate = passport.authenticate("local", { session: false });

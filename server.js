@@ -1,33 +1,40 @@
 const express = require("express");
 
 const api = require("./api");
+
 const app = express();
-// const auth = require("./auth");
+
 const middleware = require("./middleware");
+const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+
+const auth = require("./auth");
 const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
 app.use(middleware.cors);
+app.use(bodyParser.json());
 app.use(cookieParser());
-// app.post("/login", auth.login);
+
+app.post("/login", auth.authenticate, auth.login);
 
 app.get("/blogs", api.listBlog);
 app.get("/blogs/:id", api.getBlog);
-app.post("/blogs", api.createBlog);
+app.post("/blogs", auth.ensureUser, api.createBlog);
+app.put("/blogs/:id", auth.ensureUser, api.editBlog);
+app.delete("/blogs/:id", auth.ensureUser, api.deleteBlog);
 
-app.put("/blogs/:id", api.editBlog);
-app.delete("/blogs/:id", api.deleteBlog);
 app.post("/author", api.createAuthor);
 app.get("/authors", api.getAuthors);
 app.get("/author/:id", api.getAuthor);
 
 app.get("/comments", api.getComment);
-app.post("/comments", api.createComment);
-app.put("/comments/:id", api.updateComment);
-app.post("/follow/:id", api.followAuthor);
-app.post("/unfollow/:id", api.unfollowAuthor);
+app.post("/comments", auth.ensureUser, api.createComment);
+app.put("/comments/:id", auth.ensureUser, api.updateComment);
+
+app.post("/follow/:id", auth.ensureUser, api.followAuthor);
+app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
 
 app.use(middleware.handleValidationError);
 app.use(middleware.handleError);

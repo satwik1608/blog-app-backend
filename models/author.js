@@ -43,10 +43,8 @@ const authorSchema = new db.Schema({
 const Author = db.model("Author", authorSchema);
 
 async function get(username) {
-  if (username) {
-    const author = await Author.findOne({ username });
-    return author;
-  }
+  const author = await Author.findOne({ username });
+  return author;
 }
 
 async function create(fields) {
@@ -73,7 +71,7 @@ async function list(search) {
     .populate("following")
     .populate("blogs")
     .exec();
-  console.log(search);
+
   const author = data.filter((a) =>
     a.name.toLowerCase().startsWith(search.toLowerCase())
   );

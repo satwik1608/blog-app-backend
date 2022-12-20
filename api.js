@@ -61,7 +61,7 @@ async function getAuthor(req, res) {
 
 async function getAuthors(req, res) {
   const { search } = req.query;
-  console.log(search);
+
   const authors = await Author.list(search);
 
   res.json(authors);
@@ -72,7 +72,6 @@ async function getComment(req, res) {
   res.json(comments);
 }
 async function createComment(req, res) {
-  console.log(req.body);
   const comment = await Comment.create(req.body);
 
   res.json(comment);
