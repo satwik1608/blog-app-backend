@@ -4,7 +4,8 @@ const passport = require("passport");
 const Strategy = require("passport-local").Strategy;
 
 const Author = require("./models/author");
-const tokenkey = "token";
+const autoCatch = require("./lib/auto-catch");
+
 const jwtSecret = process.env.JWT_SECRET || "mark it zero";
 const adminPassword = process.env.ADMIN_PASSWORD || "iamthewalrus";
 const jwtOpts = { algorithm: "HS256", expiresIn: "1d" };
@@ -14,18 +15,22 @@ const authenticate = passport.authenticate("local", { session: false });
 
 module.exports = {
   authenticate,
-  login,
-  ensureUser,
+  login: autoCatch(login),
+  ensureUser: autoCatch(ensureUser),
 };
 
 async function login(req, res, next) {
   const token = await sign({ username: req.user.username });
   res.cookie("jwt", token, { httpOnly: true });
+
   res.json({ success: true, token: token });
+  console.log(token);
+  console.log(res);
 }
 
 async function ensureUser(req, res, next) {
-  const jwtString = req.headers.authorization || req.cookies.jwt;
+  const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
+
   const payload = await verify(jwtString);
 
   if (payload.username) {
@@ -59,7 +64,6 @@ async function verify(jwtString = "") {
 function adminStrategy() {
   return new Strategy(async function (username, password, cb) {
     const isAdmin = username === "admin" && password === adminPassword;
-
     if (isAdmin) return cb(null, { username: "admin" });
 
     try {
