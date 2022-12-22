@@ -27,6 +27,9 @@ app.delete("/blogs/:id", auth.ensureUser, api.deleteBlog);
 
 app.post("/author", api.createAuthor);
 app.get("/authors", api.getAuthors);
+app.get("/author", api.getAuthorId);
+app.put("/author/:id", api.updateAuthor);
+
 app.get("/author/:id", api.getAuthor);
 
 app.get("/comments", api.getComment);

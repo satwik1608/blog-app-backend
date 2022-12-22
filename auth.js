@@ -20,8 +20,10 @@ module.exports = {
 };
 
 async function login(req, res, next) {
+  console.log("wowo");
   const token = await sign({ username: req.user.username });
-  res.cookie("jwt", token, { httpOnly: true });
+
+  res.cookie("jwt", token, { httpOnly: false });
 
   res.json({ success: true, token: token });
   console.log(token);
@@ -29,8 +31,9 @@ async function login(req, res, next) {
 }
 
 async function ensureUser(req, res, next) {
+  // console.log(req.cookies);
   const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
-
+  // console.log(jwtString);
   const payload = await verify(jwtString);
 
   if (payload.username) {
@@ -64,7 +67,7 @@ async function verify(jwtString = "") {
 function adminStrategy() {
   return new Strategy(async function (username, password, cb) {
     const isAdmin = username === "admin" && password === adminPassword;
-    if (isAdmin) return cb(null, { username: "admin" });
+    if (isAdmin) return cb(null, { username: "admin" }); // potential bug to be resolved
 
     try {
       const user = await Author.get(username);

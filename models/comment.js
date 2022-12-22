@@ -19,10 +19,16 @@ const commentSchema = new db.Schema({
     type: String,
     ref: "Author",
     index: true,
-    rerquired: true,
+    required: true,
   },
   reply: {
     type: String,
+    ref: "Comment",
+    index: true,
+  },
+  replyIs: {
+    type: Boolean,
+    required: true,
   },
 });
 
@@ -60,7 +66,7 @@ async function get() {
   return await Comment.find()
     .populate("author")
     .populate("blog")
-    .populate("reply")
+    .populate({ path: "reply", populate: "author" })
     .exec();
 }
 

@@ -9,6 +9,7 @@ module.exports = {
   find,
   follow,
   unfollow,
+  edit,
   get,
   list,
 };
@@ -35,6 +36,11 @@ const authorSchema = new db.Schema({
       index: true,
     },
   ],
+  liked: [
+    {
+      type: String,
+    },
+  ],
   lists: [{ type: String, ref: "Blog", index: true }],
   following: [{ type: String, ref: "Author", index: true }],
   followers: [{ type: String, ref: "Author", index: true }],
@@ -43,7 +49,8 @@ const authorSchema = new db.Schema({
 const Author = db.model("Author", authorSchema);
 
 async function get(username) {
-  const author = await Author.findOne({ username });
+  console.log("username", username);
+  const author = await Author.findOne({ username: username });
   return author;
 }
 
@@ -79,15 +86,19 @@ async function list(search) {
   return author;
 }
 async function edit(id, change) {
-  const author = Author.findById(id);
+  const author = await Author.findById(id);
 
-  Object.keys(change).forEach(function (key) {
-    author[key] = change[key];
-  });
+  // Object.keys(change).forEach(function (key) {
+  //   author[key] = change[key];
+  // });
+  console.log(change);
+  if (change.id === 1) author.liked.push(change.liked);
+  else if (change.id === -1) author.liked.remove(change.liked);
 
+  console.log(author);
   await author.save();
 
-  res.json(author);
+  return author;
 }
 
 async function remove(id) {

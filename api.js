@@ -10,8 +10,10 @@ module.exports = {
   deleteBlog,
   getBlog,
   createAuthor,
+  updateAuthor,
   getAuthor,
   getAuthors,
+  getAuthorId,
   getComment,
   createComment,
   updateComment,
@@ -54,6 +56,17 @@ async function createAuthor(req, res) {
   res.json(author);
 }
 
+async function updateAuthor(req, res) {
+  const author = await Author.edit(req.params.id, req.body);
+
+  res.json(author);
+}
+
+async function getAuthorId(req, res) {
+  const { name } = req.query;
+  const author = await Author.get(name);
+  res.json(author);
+}
 async function getAuthor(req, res) {
   const author = await Author.find(req.params.id);
   res.json(author);
