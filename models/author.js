@@ -127,10 +127,12 @@ async function follow(id1, id2) {
 
 async function unfollow(id1, id2) {
   const author = await Author.findById(id1);
-
+  const author2 = await Author.findById(id2);
   author.following.remove(id2);
+  author2.followers.remove(id1);
 
   await author.save();
+  await author2.save();
 
   return author;
 }

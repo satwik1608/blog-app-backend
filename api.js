@@ -97,6 +97,7 @@ async function updateComment(req, res) {
 }
 
 async function followAuthor(req, res) {
+  // body will follow params
   const author = await Author.follow(req.body.id, req.params.id);
 
   res.json(author);
