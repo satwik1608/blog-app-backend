@@ -79,11 +79,14 @@ async function list(search) {
     .populate("blogs")
     .exec();
 
-  const author = data.filter((a) =>
-    a.name.toLowerCase().startsWith(search.toLowerCase())
-  );
+  if (search) {
+    const author = data.filter((a) =>
+      a.name.toLowerCase().startsWith(search.toLowerCase())
+    );
+    return author;
+  }
 
-  return author;
+  return data;
 }
 async function edit(id, change) {
   const author = await Author.findById(id);
@@ -116,9 +119,6 @@ async function follow(id1, id2) {
   author.following.push(id2);
   const author2 = await Author.findById(id2);
   author2.followers.push(id1);
-
-  await author.populate("following");
-  await author2.populate("followers");
 
   await author2.save();
   await author.save();
