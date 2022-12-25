@@ -90,15 +90,18 @@ async function list(search) {
 }
 async function edit(id, change) {
   const author = await Author.findById(id);
-
-  // Object.keys(change).forEach(function (key) {
-  //   author[key] = change[key];
-  // });
+  console.log(id);
   console.log(change);
-  if (change.id === 1) author.liked.push(change.liked);
-  else if (change.id === -1) author.liked.remove(change.liked);
-
   console.log(author);
+  if (change.id) {
+    if (change.id === 1) author.liked.push(change.liked);
+    else if (change.id === -1) author.liked.remove(change.liked);
+  } else {
+    Object.keys(change).forEach(function (key) {
+      author[key] = change[key];
+    });
+  }
+
   await author.save();
 
   return author;
