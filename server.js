@@ -1,7 +1,8 @@
 const express = require("express");
 
 const api = require("./api");
-
+const db = require("./db");
+const mul = require("./multer");
 const app = express();
 
 const middleware = require("./middleware");
@@ -38,7 +39,12 @@ app.put("/comments/:id", auth.ensureUser, api.updateComment);
 
 app.post("/follow/:id", auth.ensureUser, api.followAuthor);
 app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
-
+app.post(
+  "/image",
+  auth.ensureUser,
+  mul.upload.single("testImage"),
+  api.uploadImage
+);
 app.use(middleware.handleValidationError);
 app.use(middleware.handleError);
 app.use(middleware.notFound);

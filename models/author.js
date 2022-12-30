@@ -26,7 +26,7 @@ const authorSchema = new db.Schema({
   ],
   password: { type: String, required: true },
   rating: { type: Number },
-  imgThumb: { type: String },
+  imgThumb: { type: String, ref: "Image", index: true },
   img: { type: String },
   description: { type: String },
   blogs: [

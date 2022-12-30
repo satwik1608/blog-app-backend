@@ -1,7 +1,7 @@
 const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
-
+const Image = require("./models/image");
 const auth = require("./auth");
 module.exports = {
   createBlog,
@@ -19,6 +19,7 @@ module.exports = {
   updateComment,
   followAuthor,
   unfollowAuthor,
+  uploadImage,
 };
 async function createBlog(req, res) {
   const blog = await Blog.create(req.body);
@@ -51,6 +52,7 @@ async function deleteBlog(req, res) {
 }
 
 async function createAuthor(req, res) {
+  console.log(req.body);
   const author = await Author.create(req.body);
 
   res.json(author);
@@ -106,6 +108,19 @@ async function followAuthor(req, res) {
 async function unfollowAuthor(req, res) {
   const author = await Author.unfollow(req.body.id, req.params.id);
   res.json(author);
+}
+
+async function uploadImage(req, res) {
+  // console.log("req", req);
+  console.log(req.body);
+  const fields = {
+    name: req.body.name,
+    file: req.file,
+  };
+  console.log("fields", fields);
+  const image = await Image.create(fields);
+
+  res.json(image);
 }
 
 function forbidden(next) {
