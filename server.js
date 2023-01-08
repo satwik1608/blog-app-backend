@@ -41,7 +41,7 @@ app.post("/follow/:id", auth.ensureUser, api.followAuthor);
 app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
 app.post(
   "/image",
-  auth.ensureUser,
+
   mul.upload.single("testImage"),
   api.uploadImage
 );
