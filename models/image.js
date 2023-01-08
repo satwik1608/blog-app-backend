@@ -3,6 +3,7 @@ const fs = require("fs");
 
 module.exports = {
   create,
+  get,
 };
 
 const imageSchema = new db.Schema({
@@ -16,7 +17,6 @@ const imageSchema = new db.Schema({
 const Image = db.model("Image", imageSchema);
 
 async function create(fields) {
-  console.log("baad", fields);
   const image = new Image({
     name: fields.name,
     img: {
@@ -28,4 +28,8 @@ async function create(fields) {
   await image.save();
 
   return image;
+}
+
+async function get(id) {
+  return await Image.findById(id);
 }

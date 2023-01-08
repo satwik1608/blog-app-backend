@@ -1,6 +1,6 @@
 const db = require("../db");
 const cuid = require("cuid");
-
+const { isAlphanumeric, isEmail } = require("validator");
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 10;
 
@@ -13,11 +13,12 @@ module.exports = {
   get,
   list,
 };
+
 const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
   name: { type: String, required: true },
-  username: { type: String, required: true },
-  email: { type: String, required: true },
+  username: usernameSchema(),
+  email: emailSchema({ required: true }),
   profession: { type: String },
   category: [
     {
@@ -49,7 +50,6 @@ const authorSchema = new db.Schema({
 const Author = db.model("Author", authorSchema);
 
 async function get(username) {
-  console.log("username", username);
   const author = await Author.findOne({ username: username });
   return author;
 }
@@ -90,9 +90,7 @@ async function list(search) {
 }
 async function edit(id, change) {
   const author = await Author.findById(id);
-  console.log(id);
-  console.log(change);
-  console.log(author);
+
   if (change.id) {
     if (change.id === 1) author.liked.push(change.liked);
     else if (change.id === -1) author.liked.remove(change.liked);
@@ -113,7 +111,8 @@ async function remove(id) {
 }
 
 async function hashPassword(author) {
-  author.password = await bcrypt.hash(author.password, SALT_ROUNDS);
+  if (author.password)
+    author.password = await bcrypt.hash(author.password, SALT_ROUNDS);
 }
 
 async function follow(id1, id2) {
@@ -138,4 +137,48 @@ async function unfollow(id1, id2) {
   await author2.save();
 
   return author;
+}
+
+async function isUnique(doc, username) {
+  const existing = await get(username);
+  return !existing || doc._id === existing._id;
+}
+
+function emailSchema(opts = {}) {
+  const { required } = opts;
+  return {
+    type: String,
+    required: !!required,
+    validate: {
+      validator: isEmail,
+      message: (props) => `${props.value} is not a valid email address`,
+    },
+  };
+}
+
+function usernameSchema() {
+  return {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    minLength: 3,
+    maxLength: 16,
+    validate: [
+      {
+        validator: isAlphanumeric,
+        message: (props) => `${props.value} contains special characters`,
+      },
+      {
+        validator: (str) => !str.match(/^admin$/i),
+        message: (props) => "Invalid username",
+      },
+      {
+        validator: function (username) {
+          return isUnique(this, username);
+        },
+        message: (props) => "Username is taken",
+      },
+    ],
+  };
 }

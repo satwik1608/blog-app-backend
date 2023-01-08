@@ -21,9 +21,13 @@ module.exports = {
   unfollowAuthor,
   uploadImage,
 };
-async function createBlog(req, res) {
-  const blog = await Blog.create(req.body);
-  res.json(blog);
+async function createBlog(req, res, next) {
+  try {
+    const blog = await Blog.create(req.body);
+    res.json(blog);
+  } catch (ex) {
+    next(ex);
+  }
 }
 
 async function listBlog(req, res) {
@@ -51,11 +55,14 @@ async function deleteBlog(req, res) {
   res.json({ success: true });
 }
 
-async function createAuthor(req, res) {
-  console.log(req.body);
-  const author = await Author.create(req.body);
+async function createAuthor(req, res, next) {
+  try {
+    const author = await Author.create(req.body);
 
-  res.json(author);
+    res.json(author);
+  } catch (ex) {
+    next(ex);
+  }
 }
 
 async function updateAuthor(req, res) {
@@ -110,14 +117,12 @@ async function unfollowAuthor(req, res) {
   res.json(author);
 }
 
-async function uploadImage(req, res) {
-  // console.log("req", req);
-  console.log(req.body);
+async function uploadImage(req, res, next) {
   const fields = {
     name: req.body.name,
     file: req.file,
   };
-  console.log("fields", fields);
+
   const image = await Image.create(fields);
 
   res.json(image);

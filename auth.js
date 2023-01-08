@@ -20,20 +20,16 @@ module.exports = {
 };
 
 async function login(req, res, next) {
-  console.log("wowo");
   const token = await sign({ username: req.user.username });
 
   res.cookie("jwt", token, { httpOnly: false });
 
   res.json({ success: true, token: token });
-  console.log(token);
-  console.log(res);
 }
 
 async function ensureUser(req, res, next) {
-  // console.log(req.cookies);
   const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
-  // console.log(jwtString);
+
   const payload = await verify(jwtString);
 
   if (payload.username) {

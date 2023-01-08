@@ -1,6 +1,7 @@
 const db = require("../db");
 
 const Author = require("./author");
+const { isLength } = require("validator");
 
 const cuid = require("cuid");
 
@@ -12,12 +13,14 @@ module.exports = {
   remove,
   find,
 };
+
 const blogSchema = new db.Schema({
   _id: { type: String, default: cuid },
-  title: { type: String },
+  title: { type: String, required: true, minLength: 3, maxLength: 25 },
   tags: [
     {
       type: String,
+      required: true,
     },
   ],
   img: { type: String, ref: "Image", index: true },
@@ -36,7 +39,7 @@ const blogSchema = new db.Schema({
       index: true,
     },
   ],
-  brief: { type: String },
+  brief: { type: String, required: true },
   likes: { type: Number, default: 0 },
   content: [{ type: String }],
   date: { type: Date, default: Date() },
@@ -47,7 +50,12 @@ const Blog = db.model("Blog", blogSchema);
 async function create(fields) {
   const blog = new Blog(fields);
 
-  await blog.populate("author", "img");
+  await blog.populate("author");
+
+  const img = blog.img;
+  if (img.length > 0) {
+    await blog.populate("img");
+  }
 
   const author = await Author.find(fields.author);
 
@@ -62,7 +70,8 @@ async function create(fields) {
 
 async function list() {
   return await Blog.find()
-    .populate("img", { path: "author", select: "name" })
+    .populate({ path: "author", select: "name" })
+    .populate("img")
     .exec();
 }
 
