@@ -27,7 +27,11 @@ const authorSchema = new db.Schema({
   ],
   password: { type: String, required: true },
   rating: { type: Number },
-  imgThumb: { type: String, ref: "Image", index: true },
+  imgThumb: {
+    type: String,
+    ref: "Image",
+    index: true,
+  },
   img: { type: String },
   description: { type: String },
   blogs: [
@@ -66,17 +70,32 @@ async function create(fields) {
 
 async function find(id) {
   return await Author.findById(id)
-    .populate("followers")
+
+    .populate({
+      path: "followers",
+      populate: {
+        path: "imgThumb",
+        model: "Image",
+      },
+    })
     .populate("following")
     .populate("blogs")
+    .populate("imgThumb")
     .exec();
 }
 
 async function list(search) {
   const data = await Author.find()
-    .populate("followers")
+    .populate({
+      path: "followers",
+      populate: {
+        path: "imgThumb",
+        model: "Image",
+      },
+    })
     .populate("following")
     .populate("blogs")
+    .populate("imgThumb")
     .exec();
 
   if (search) {

@@ -50,12 +50,15 @@ const Blog = db.model("Blog", blogSchema);
 async function create(fields) {
   const blog = new Blog(fields);
 
-  await blog.populate("author");
-
-  const img = blog.img;
-  if (img.length > 0) {
-    await blog.populate("img");
-  }
+  await blog
+    .populate({
+      path: "author",
+      populate: {
+        path: "imgThumb",
+        model: "Image",
+      },
+    })
+    .populate("img");
 
   const author = await Author.find(fields.author);
 
@@ -70,7 +73,13 @@ async function create(fields) {
 
 async function list() {
   return await Blog.find()
-    .populate({ path: "author", select: "name" })
+    .populate({
+      path: "author",
+      populate: {
+        path: "imgThumb",
+        model: "Image",
+      },
+    })
     .populate("img")
     .exec();
 }
