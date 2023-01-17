@@ -10,6 +10,7 @@ module.exports = {
   edit,
   list,
   get,
+  getImage,
   remove,
   find,
 };
@@ -80,12 +81,16 @@ async function list() {
         model: "Image",
       },
     })
-    .populate("img")
+    .select("-img")
     .exec();
 }
 
 async function get(id) {
   return await Blog.findById(id).populate("img");
+}
+
+async function getImage(id) {
+  return await Blog.findById(id).select("img").populate("img");
 }
 
 async function edit(id, change) {

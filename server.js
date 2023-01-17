@@ -22,6 +22,7 @@ app.post("/login", auth.authenticate, auth.login);
 
 app.get("/blogs", api.listBlog);
 app.get("/blogs/:id", api.getBlog);
+app.get("/blogImage/:id", api.getBlogImage);
 app.post("/blogs", auth.ensureUser, api.createBlog);
 app.put("/blogs/:id", auth.ensureUser, api.editBlog);
 app.delete("/blogs/:id", auth.ensureUser, api.deleteBlog);

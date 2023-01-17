@@ -2,13 +2,17 @@ const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
 const Image = require("./models/image");
+
 const auth = require("./auth");
+
+const fs = require("fs");
 module.exports = {
   createBlog,
   listBlog,
   editBlog,
   deleteBlog,
   getBlog,
+  getBlogImage,
   createAuthor,
   updateAuthor,
   getAuthor,
@@ -38,6 +42,12 @@ async function listBlog(req, res) {
 
 async function getBlog(req, res) {
   const blog = await Blog.get(req.params.id);
+
+  res.json(blog);
+}
+
+async function getBlogImage(req, res) {
+  const blog = await Blog.getImage(req.params.id);
 
   res.json(blog);
 }
