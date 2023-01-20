@@ -12,6 +12,8 @@ module.exports = {
   edit,
   get,
   list,
+  toList,
+  removeFromList,
 };
 
 const authorSchema = new db.Schema({
@@ -78,6 +80,7 @@ async function find(id) {
         model: "Image",
       },
     })
+
     .populate("following")
     .populate("blogs")
     .populate("imgThumb")
@@ -93,6 +96,7 @@ async function list(search) {
         model: "Image",
       },
     })
+
     .populate("following")
     .populate("blogs")
     .populate("imgThumb")
@@ -154,6 +158,26 @@ async function unfollow(id1, id2) {
 
   await author.save();
   await author2.save();
+
+  return author;
+}
+
+async function toList(authorId, blogId) {
+  const author = await Author.findById(authorId);
+
+  author.lists.push(blogId);
+
+  await author.save();
+
+  return author;
+}
+
+async function removeFromList(authorId, blogId) {
+  const author = await Author.findById(authorId);
+  // console.log(author);
+  author.lists.remove(blogId);
+
+  await author.save();
 
   return author;
 }

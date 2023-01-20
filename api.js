@@ -18,6 +18,7 @@ module.exports = {
   getAuthor,
   getAuthors,
   getAuthorId,
+
   getComment,
   createComment,
   updateComment,
@@ -76,9 +77,23 @@ async function createAuthor(req, res, next) {
 }
 
 async function updateAuthor(req, res) {
-  const author = await Author.edit(req.params.id, req.body);
+  if (req.query.use === "list") {
+    const { id: blogId } = req.body;
 
-  res.json(author);
+    const author = await Author.toList(req.params.id, blogId);
+
+    res.json(author);
+  } else if (req.query.use === "delist") {
+    const { id: blogId } = req.body;
+
+    const author = await Author.removeFromList(req.params.id, blogId);
+
+    res.json(author);
+  } else {
+    const author = await Author.edit(req.params.id, req.body);
+
+    res.json(author);
+  }
 }
 
 async function getAuthorId(req, res) {
@@ -98,6 +113,7 @@ async function getAuthors(req, res) {
 
   res.json(authors);
 }
+
 async function getComment(req, res) {
   const comments = await Comment.get();
 
