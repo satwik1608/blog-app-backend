@@ -2,9 +2,7 @@ const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
 const Image = require("./models/image");
-
-const auth = require("./auth");
-
+const redis = require("./redis-client");
 const fs = require("fs");
 module.exports = {
   createBlog,
@@ -29,6 +27,7 @@ module.exports = {
 async function createBlog(req, res, next) {
   try {
     const blog = await Blog.create(req.body);
+    await redis.del("blogList");
     res.json(blog);
   } catch (ex) {
     next(ex);
@@ -36,9 +35,18 @@ async function createBlog(req, res, next) {
 }
 
 async function listBlog(req, res) {
-  const blogs = await Blog.list();
+  const value = await redis.get("blogList");
 
-  res.json(blogs);
+  if (value) {
+    res.json(JSON.parse(value));
+    console.log("cool");
+  } else {
+    const blogs = await Blog.list();
+
+    await redis.set("blogList", JSON.stringify(blogs));
+
+    res.json(blogs);
+  }
 }
 
 async function getBlog(req, res) {
@@ -57,12 +65,13 @@ async function editBlog(req, res) {
   const change = req.body;
 
   const blog = await Blog.edit(req.params.id, change);
-
+  await redis.del("blogList");
   res.json(blog);
 }
 
 async function deleteBlog(req, res) {
   await Blog.remove(req.params.id);
+  await redis.del("blogList");
   res.json({ success: true });
 }
 
