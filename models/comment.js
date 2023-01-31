@@ -21,11 +21,13 @@ const commentSchema = new db.Schema({
     index: true,
     required: true,
   },
-  reply: {
-    type: String,
-    ref: "Comment",
-    index: true,
-  },
+  reply: [
+    {
+      type: String,
+      ref: "Comment",
+      index: true,
+    },
+  ],
   replyIs: {
     type: Boolean,
     required: true,
@@ -53,6 +55,13 @@ async function create(fields) {
 
 async function update(change, id) {
   const comment = await Comment.findById(id);
+
+  if (change.reply) {
+    comment.reply.push(change.reply);
+
+    await comment.save();
+    return comment;
+  }
 
   Object.keys(change).forEach(function (key) {
     comment[key] = change[key];
