@@ -17,7 +17,7 @@ module.exports = {
 
 const blogSchema = new db.Schema({
   _id: { type: String, default: cuid },
-  title: { type: String, required: true, minLength: 3, maxLength: 25 },
+  title: { type: String, required: true, minLength: 3, maxLength: 50 },
   tags: [
     {
       type: String,

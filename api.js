@@ -38,8 +38,8 @@ async function listBlog(req, res) {
   const value = await redis.get("blogList");
 
   if (value) {
+    console.log("cache");
     res.json(JSON.parse(value));
-    console.log("cool");
   } else {
     const blogs = await Blog.list();
 
@@ -86,6 +86,7 @@ async function createAuthor(req, res, next) {
 }
 
 async function updateAuthor(req, res) {
+  await redis.del("blogList");
   if (req.query.use === "list") {
     const { id: blogId } = req.body;
 
@@ -107,9 +108,18 @@ async function updateAuthor(req, res) {
 
 async function getAuthorId(req, res) {
   const { name } = req.query;
-  const author = await Author.get(name);
-  res.json(author);
+
+  const value = await redis.get(name);
+
+  if (value) {
+    res.json(JSON.parse(value));
+  } else {
+    const author = await Author.get(name);
+    await redis.set(name, JSON.stringify(author));
+    res.json(author);
+  }
 }
+
 async function getAuthor(req, res) {
   const author = await Author.find(req.params.id);
   res.json(author);
@@ -143,16 +153,18 @@ async function updateComment(req, res) {
 async function followAuthor(req, res) {
   // body will follow params
   const author = await Author.follow(req.body.id, req.params.id);
-
+  await redis.del(author.username);
   res.json(author);
 }
 
 async function unfollowAuthor(req, res) {
   const author = await Author.unfollow(req.body.id, req.params.id);
+  await redis.del(author.username);
   res.json(author);
 }
 
 async function uploadImage(req, res, next) {
+  await redis.del("blogList");
   const fields = {
     name: req.body.name,
     file: req.file,

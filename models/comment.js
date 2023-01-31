@@ -30,6 +30,7 @@ const commentSchema = new db.Schema({
     type: Boolean,
     required: true,
   },
+  date: { type: Date, default: Date() },
 });
 
 const Comment = db.model("Comment", commentSchema);
