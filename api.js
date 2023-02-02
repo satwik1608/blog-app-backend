@@ -22,6 +22,7 @@ module.exports = {
   updateComment,
   followAuthor,
   unfollowAuthor,
+  getFollowers,
   uploadImage,
 };
 async function createBlog(req, res, next) {
@@ -111,13 +112,13 @@ async function getAuthorId(req, res) {
 
   const value = await redis.get(name);
 
-  if (value) {
-    res.json(JSON.parse(value));
-  } else {
-    const author = await Author.get(name);
-    await redis.set(name, JSON.stringify(author));
-    res.json(author);
-  }
+  // if (value) {
+  //   res.json(JSON.parse(value));
+  // } else {
+  const author = await Author.get(name);
+  await redis.set(name, JSON.stringify(author));
+  res.json(author);
+  // }
 }
 
 async function getAuthor(req, res) {
@@ -163,6 +164,13 @@ async function unfollowAuthor(req, res) {
   res.json(author);
 }
 
+async function getFollowers(req, res) {
+  const { id } = req.params;
+
+  const followers = await Author.followers(id);
+
+  res.json(followers);
+}
 async function uploadImage(req, res, next) {
   await redis.del("blogList");
   const fields = {

@@ -40,6 +40,7 @@ app.put("/comments/:id", auth.ensureUser, api.updateComment);
 
 app.post("/follow/:id", auth.ensureUser, api.followAuthor);
 app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
+app.get("/followers/:id", auth.ensureUser, api.getFollowers);
 app.post(
   "/image",
 

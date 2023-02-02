@@ -9,6 +9,7 @@ module.exports = {
   find,
   follow,
   unfollow,
+  followers,
   edit,
   get,
   list,
@@ -160,6 +161,22 @@ async function unfollow(id1, id2) {
   await author2.save();
 
   return author;
+}
+
+async function followers(id) {
+  const author = await Author.findById(id);
+
+  await author.populate("followers");
+
+  await author.populate({
+    path: "followers",
+    populate: {
+      path: "imgThumb",
+      model: "Image",
+    },
+  });
+
+  return author.followers;
 }
 
 async function toList(authorId, blogId) {
