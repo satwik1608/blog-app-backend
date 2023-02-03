@@ -38,16 +38,16 @@ async function createBlog(req, res, next) {
 async function listBlog(req, res) {
   const value = await redis.get("blogList");
 
-  if (value) {
-    console.log("cache");
-    res.json(JSON.parse(value));
-  } else {
-    const blogs = await Blog.list();
+  // if (value) {
+  //   console.log("cache");
+  //   res.json(JSON.parse(value));
+  // } else {
+  const blogs = await Blog.list();
 
-    await redis.set("blogList", JSON.stringify(blogs));
+  await redis.set("blogList", JSON.stringify(blogs));
 
-    res.json(blogs);
-  }
+  res.json(blogs);
+  // }
 }
 
 async function getBlog(req, res) {

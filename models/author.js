@@ -226,10 +226,6 @@ function usernameSchema() {
     maxLength: 16,
     validate: [
       {
-        validator: isAlphanumeric,
-        message: (props) => `${props.value} contains special characters`,
-      },
-      {
         validator: (str) => !str.match(/^admin$/i),
         message: (props) => "Invalid username",
       },
