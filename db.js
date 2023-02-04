@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const dbURI = process.env.modelKey;
+const dbURI =
+  "mongodb+srv://satwik12:satwik12@cluster0.byld6up.mongodb.net/test";
 
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
