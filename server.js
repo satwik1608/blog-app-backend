@@ -9,14 +9,8 @@ const middleware = require("./middleware");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-app.use(cors());
+// app.use(cors());
 app.use(middleware.cors);
-const corsOrigin = {
-  origin: "http://localhost:3000", //or whatever port your frontend is using
-  credentials: true,
-  optionSuccessStatus: 200,
-};
-app.use(cors(corsOrigin));
 
 const auth = require("./auth");
 
