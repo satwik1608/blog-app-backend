@@ -3,8 +3,6 @@ const db = require("../db");
 const Author = require("./author");
 const { isLength } = require("validator");
 
-const cuid = require("cuid");
-
 module.exports = {
   create,
   edit,
@@ -16,7 +14,6 @@ module.exports = {
 };
 
 const blogSchema = new db.Schema({
-  _id: { type: String, default: cuid },
   title: { type: String, required: true, minLength: 3, maxLength: 50 },
   tags: [
     {

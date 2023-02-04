@@ -1,5 +1,5 @@
 const db = require("../db");
-const cuid = require("cuid");
+
 const { isAlphanumeric, isEmail } = require("validator");
 const bcrypt = require("bcrypt");
 const SALT_ROUNDS = 10;
@@ -18,7 +18,6 @@ module.exports = {
 };
 
 const authorSchema = new db.Schema({
-  _id: { type: String, default: cuid },
   name: { type: String, required: true },
   username: usernameSchema(),
   email: emailSchema({ required: true }),
