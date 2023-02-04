@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  
+  "proxy": "http://localhost:3000",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
