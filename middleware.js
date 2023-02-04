@@ -8,9 +8,10 @@ module.exports = {
 };
 
 function cors(req, res, next) {
-  // const origin = req.headers.origin;
+  console.log("header", req.headers.origin);
+  const origin = req.headers.origin;
 
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", origin || "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "POST, GET, PUT, DELETE, OPTIONS, XMODIFY"

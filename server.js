@@ -9,7 +9,7 @@ const middleware = require("./middleware");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-// app.use(cors());
+app.use(cors());
 app.use(middleware.cors);
 
 const auth = require("./auth");
