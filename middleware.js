@@ -8,7 +8,7 @@ module.exports = {
 };
 
 function cors(req, res, next) {
-  console.log("header", req.headers.origin);
+  // console.log("header", req.headers.origin);
   const origin = req.headers.origin;
 
   res.setHeader("Access-Control-Allow-Origin", origin || "*");
