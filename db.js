@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
-const dbURI = "mongodb://localhost/blogApp";
+const dbURI =
+  "mongodb+srv://satwik12:satwik12@cluster0.byld6up.mongodb.net/test";
 
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
