@@ -8,8 +8,7 @@ const app = express();
 const middleware = require("./middleware");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-
-import cors from "cors";
+const cors = require("cors");
 const corsOrigin = {
   origin: "http://localhost:3000", //or whatever port your frontend is using
   credentials: true,
@@ -18,7 +17,7 @@ const corsOrigin = {
 app.use(cors(corsOrigin));
 
 const auth = require("./auth");
-const cors = require("cors");
+
 app.use(cors());
 app.use(express.json());
 
