@@ -24,7 +24,7 @@ const blogSchema = new db.Schema({
       required: true,
     },
   ],
-  img: { type: String, ref: "Image", index: true },
+  img: { type: String, required: true },
   likes: { type: Number, default: 0 },
   author: {
     type: String,
@@ -53,12 +53,7 @@ async function create(fields) {
 
   await blog.populate({
     path: "author",
-    populate: {
-      path: "imgThumb",
-      model: "Image",
-    },
   });
-  await blog.populate("img");
 
   const author = await Author.find(fields.author);
 
@@ -75,21 +70,17 @@ async function list() {
   return await Blog.find()
     .populate({
       path: "author",
-      populate: {
-        path: "imgThumb",
-        model: "Image",
-      },
     })
     .select("-img")
     .exec();
 }
 
 async function get(id) {
-  return await Blog.findById(id).populate("img");
+  return await Blog.findById(id);
 }
 
 async function getImage(id) {
-  return await Blog.findById(id).select("img").populate("img");
+  return await Blog.findById(id).select("img");
 }
 
 async function edit(id, change) {

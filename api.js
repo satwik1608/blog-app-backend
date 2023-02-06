@@ -82,6 +82,7 @@ async function createAuthor(req, res, next) {
 
     res.json(author);
   } catch (ex) {
+    console.log(ex);
     next(ex);
   }
 }
