@@ -209,7 +209,7 @@ function usernameSchema() {
     unique: true,
     lowercase: true,
     minLength: 3,
-    maxLength: 16,
+    maxLength: 12,
     validate: [
       {
         validator: (str) => !str.match(/^admin$/i),

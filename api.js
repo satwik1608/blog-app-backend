@@ -31,6 +31,7 @@ async function createBlog(req, res, next) {
     // await redis.del("blogList");
     res.json(blog);
   } catch (ex) {
+    console.log(ex);
     next(ex);
   }
 }
