@@ -40,7 +40,7 @@ const blogSchema = new db.Schema({
       index: true,
     },
   ],
-  brief: { type: String, required: true, minLength: 3, maxLength: 80 },
+  brief: { type: String, required: true, minLength: 3, maxLength: 150 },
   likes: { type: Number, default: 0 },
   content: [{ type: String }],
   date: { type: Date, default: Date() },
