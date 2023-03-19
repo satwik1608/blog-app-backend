@@ -108,7 +108,10 @@ async function sendVerificationEmail(req, res, next) {
       }
     );
 
-    const url = `http://localhost:1337/confirmation/${emailToken}`;
+    const urlT = "https://shiny-ox-leotard.cyclic.app";
+    // const urlT = "http:///localhost:1337";
+
+    const url = `urlT/confirmation/${emailToken}`;
     // console.log(author.email);
 
     await transporter.sendMail({
@@ -139,8 +142,10 @@ async function createAuthor(req, res, next) {
       }
     );
 
-    const url = `http://localhost:1337/confirmation/${emailToken}`;
-    console.log(author.email);
+    const urlT = "https://shiny-ox-leotard.cyclic.app";
+    // const urlT = "http:///localhost:1337";
+
+    const url = `urlT/confirmation/${emailToken}`;
 
     await transporter.sendMail({
       from: "Satwik , <lioneljames123@gmail.com>",
@@ -259,7 +264,7 @@ async function confirmEmail(req, res, next) {
     console.log(ex);
   }
 
-  res.redirect("http://localhost:3000/login");
+  res.redirect("https://inkwell.tech/login");
 }
 
 function forbidden(next) {
