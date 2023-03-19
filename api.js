@@ -111,7 +111,7 @@ async function sendVerificationEmail(req, res, next) {
     const urlT = "https://shiny-ox-leotard.cyclic.app";
     // const urlT = "http:///localhost:1337";
 
-    const url = `urlT/confirmation/${emailToken}`;
+    const url = `${urlT}/confirmation/${emailToken}`;
     // console.log(author.email);
 
     await transporter.sendMail({
@@ -145,7 +145,7 @@ async function createAuthor(req, res, next) {
     const urlT = "https://shiny-ox-leotard.cyclic.app";
     // const urlT = "http:///localhost:1337";
 
-    const url = `urlT/confirmation/${emailToken}`;
+    const url = `${urlT}/confirmation/${emailToken}`;
 
     await transporter.sendMail({
       from: "Satwik , <lioneljames123@gmail.com>",
