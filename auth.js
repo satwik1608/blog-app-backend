@@ -20,7 +20,18 @@ module.exports = {
 };
 
 async function login(req, res, next) {
-  const token = await sign({ username: req.user.username });
+  console.log("veru", req.user);
+  if (req.user.verified === false) {
+    throw Object.assign(new Error("email not verified"), { statusCode: 401 });
+
+    next(err);
+
+    return;
+  }
+  const token = await sign({
+    username: req.user.username,
+    verified: req.user.verified,
+  });
 
   res.cookie("jwt", token, { httpOnly: false });
 
@@ -67,10 +78,12 @@ function adminStrategy() {
 
     try {
       const user = await Author.get(username);
+      // console.log("wowo", user);
       if (!user) return cb(null, false);
 
       const isUser = await bcrypt.compare(password, user.password);
-      if (isUser) return cb(null, { username: user.username });
+      if (isUser)
+        return cb(null, { username: user.username, verified: user.verified });
     } catch (err) {}
 
     cb(null, false);

@@ -48,6 +48,9 @@ app.post(
   mul.upload.single("testImage"),
   api.uploadImage
 );
+
+app.get("/confirmation/:token", api.confirmEmail);
+app.post("/send-verificaion-mail", api.sendVerificationEmail);
 app.use(middleware.handleValidationError);
 app.use(middleware.handleError);
 app.use(middleware.notFound);

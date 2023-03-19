@@ -8,7 +8,7 @@ module.exports = {
 };
 
 function cors(req, res, next) {
-  console.log("header", req.headers.origin);
+  // console.log("header", req.headers.origin);
   const origin = req.headers.origin;
 
   res.setHeader("Access-Control-Allow-Origin", origin || "*");
@@ -30,8 +30,11 @@ function handleError(err, req, res, next) {
   if (res.headersSent) return next(err);
 
   if (!err.statusCode) console.error(err);
+
   const statusCode = err.statusCode || 500;
-  const errorMessage = STATUS_CODES[statusCode] || "Internal Error";
+  const errorMessage =
+    err.message || STATUS_CODES[statusCode] || "Internal Error";
+
   res.status(statusCode).json({ error: errorMessage });
 }
 

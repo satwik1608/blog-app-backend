@@ -2,8 +2,9 @@ const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
 const Image = require("./models/image");
-// const redis = require("./redis-client");
-const fs = require("fs");
+const mailer = require("./mailer");
+const jwt = require("jsonwebtoken");
+
 module.exports = {
   createBlog,
   listBlog,
@@ -24,6 +25,8 @@ module.exports = {
   unfollowAuthor,
   getFollowers,
   uploadImage,
+  confirmEmail,
+  sendVerificationEmail,
 };
 async function createBlog(req, res, next) {
   try {
@@ -77,9 +80,74 @@ async function deleteBlog(req, res) {
   res.json({ success: true });
 }
 
+const nodemailer = require("nodemailer");
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "lioneljames123@gmail.com",
+    pass: "bhvbsalxwthsqybw",
+  },
+});
+
+// console.log(transporter);
+
+const emailSecret = process.env.EMAIL_SECRET || "Akshat is wow";
+
+async function sendVerificationEmail(req, res, next) {
+  try {
+    const { userId, email } = req.body;
+    console.log("amazing", userId, email);
+    const emailToken = jwt.sign(
+      {
+        user: userId,
+      },
+      emailSecret,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    const url = `http://localhost:1337/confirmation/${emailToken}`;
+    // console.log(author.email);
+
+    await transporter.sendMail({
+      from: "Satwik , <lioneljames123@gmail.com>",
+      to: email,
+      subject:
+        "Sorry for this, all thanks to my tall ECE friend from Madhya Pradesh",
+      html: ` To confirm the email click on this goddamn link : <a href="${url}">Verify</a>`,
+    });
+  } catch (ex) {
+    console.log(ex);
+  }
+
+  res.json("Success");
+}
+
 async function createAuthor(req, res, next) {
   try {
     const author = await Author.create(req.body);
+
+    const emailToken = jwt.sign(
+      {
+        user: author._id,
+      },
+      emailSecret,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    const url = `http://localhost:1337/confirmation/${emailToken}`;
+    console.log(author.email);
+
+    await transporter.sendMail({
+      from: "Satwik , <lioneljames123@gmail.com>",
+      to: author.email,
+      subject: "Email Confirm Kariye madam sir",
+      html: ` To confirm the email click on this goddamn link : <a href="${url}">Verify</a>`,
+    });
 
     res.json(author);
   } catch (ex) {
@@ -112,15 +180,9 @@ async function updateAuthor(req, res) {
 async function getAuthorId(req, res) {
   const { name } = req.query;
 
-  // const value = await redis.get(name);
-
-  // if (value) {
-  //   res.json(JSON.parse(value));
-  // } else {
   const author = await Author.get(name);
-  // await redis.set(name, JSON.stringify(author));
+
   res.json(author);
-  // }
 }
 
 async function getAuthor(req, res) {
@@ -183,6 +245,21 @@ async function uploadImage(req, res, next) {
   const image = await Image.create(fields);
 
   res.json(image);
+}
+
+async function confirmEmail(req, res, next) {
+  try {
+    const { user: userId } = jwt.verify(req.params.token, emailSecret);
+
+    const obj = {
+      verified: true,
+    };
+    await Author.edit(userId, obj);
+  } catch (ex) {
+    console.log(ex);
+  }
+
+  res.redirect("http://localhost:3000/login");
 }
 
 function forbidden(next) {

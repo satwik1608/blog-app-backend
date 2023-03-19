@@ -21,7 +21,7 @@ const authorSchema = new db.Schema({
   _id: { type: String, default: cuid },
   name: { type: String, required: true },
   username: usernameSchema(),
-  email: emailSchema({ required: true }),
+  email: emailSchema(),
   profession: { type: String },
   category: [
     {
@@ -33,6 +33,7 @@ const authorSchema = new db.Schema({
   imgThumb: {
     type: String,
   },
+  verified: { type: Boolean, default: false },
   img: { type: String },
   description: { type: String },
   blogs: [
@@ -54,8 +55,10 @@ const authorSchema = new db.Schema({
 
 const Author = db.model("Author", authorSchema);
 
-async function get(username) {
-  const author = await Author.findOne({ username: username });
+async function get(username, email) {
+  let author;
+  if (username) author = await Author.findOne({ username: username });
+  if (email) author = await Author.findOne({ email: email });
   return author;
 }
 
@@ -190,15 +193,27 @@ async function isUnique(doc, username) {
   return !existing || doc._id === existing._id;
 }
 
+async function isUniqueEmail(doc, email) {
+  const existing = await get(null, email);
+  return !existing || doc._id === existing._id;
+}
+
 function emailSchema(opts = {}) {
-  const { required } = opts;
   return {
     type: String,
-    required: !!required,
-    validate: {
-      validator: isEmail,
-      message: (props) => `${props.value} is not a valid email address`,
-    },
+    required: true,
+    validate: [
+      {
+        validator: isEmail,
+        message: (props) => `${props.value} is not a valid email address`,
+      },
+      {
+        validator: function (email) {
+          return isUniqueEmail(this, email);
+        },
+        message: (props) => "Email is taken",
+      },
+    ],
   };
 }
 
