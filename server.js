@@ -2,7 +2,7 @@ const express = require("express");
 
 const api = require("./api");
 const db = require("./db");
-const mul = require("./multer");
+
 const app = express();
 
 const middleware = require("./middleware");
