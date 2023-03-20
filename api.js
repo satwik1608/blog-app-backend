@@ -1,8 +1,11 @@
+const { sendEmail } = require("./mailer");
+require("dotenv").config();
+
 const Blog = require("./models/blog");
 const Author = require("./models/author");
 const Comment = require("./models/comment");
 const Image = require("./models/image");
-const mailer = require("./mailer");
+
 const jwt = require("jsonwebtoken");
 
 module.exports = {
@@ -31,7 +34,6 @@ module.exports = {
 async function createBlog(req, res, next) {
   try {
     const blog = await Blog.create(req.body);
-    // await redis.del("blogList");
     res.json(blog);
   } catch (ex) {
     console.log(ex);
@@ -40,18 +42,9 @@ async function createBlog(req, res, next) {
 }
 
 async function listBlog(req, res) {
-  // const value = await redis.get("blogList");
-
-  // if (value) {
-  //   console.log("cache");
-  //   res.json(JSON.parse(value));
-  // } else {
   const blogs = await Blog.list();
 
-  // await redis.set("blogList", JSON.stringify(blogs));
-
   res.json(blogs);
-  // }
 }
 
 async function getBlog(req, res) {
@@ -70,89 +63,32 @@ async function editBlog(req, res) {
   const change = req.body;
 
   const blog = await Blog.edit(req.params.id, change);
-  // await redis.del("blogList");
+
   res.json(blog);
 }
 
 async function deleteBlog(req, res) {
   await Blog.remove(req.params.id);
-  // await redis.del("blogList");
+
   res.json({ success: true });
 }
-
-const nodemailer = require("nodemailer");
-
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "lioneljames123@gmail.com",
-    pass: "bhvbsalxwthsqybw",
-  },
-});
-
-// console.log(transporter);
-
-const emailSecret = process.env.EMAIL_SECRET || "Akshat is wow";
 
 async function sendVerificationEmail(req, res, next) {
   try {
     const { userId, email } = req.body;
-    console.log("amazing", userId, email);
-    const emailToken = jwt.sign(
-      {
-        user: userId,
-      },
-      emailSecret,
-      {
-        expiresIn: "1d",
-      }
-    );
 
-    const urlT = "https://shiny-ox-leotard.cyclic.app";
-    // const urlT = "http:///localhost:1337";
-
-    const url = `${urlT}/confirmation/${emailToken}`;
-    // console.log(author.email);
-
-    await transporter.sendMail({
-      from: "Satwik , <lioneljames123@gmail.com>",
-      to: email,
-      subject:
-        "Sorry for this, all thanks to my tall ECE friend from Madhya Pradesh",
-      html: ` To confirm the email click on this goddamn link : <a href="${url}">Verify</a>`,
-    });
+    await sendEmail({ user: userId, email: email });
+    res.json("Success");
   } catch (ex) {
     console.log(ex);
   }
-
-  res.json("Success");
 }
 
 async function createAuthor(req, res, next) {
   try {
     const author = await Author.create(req.body);
 
-    const emailToken = jwt.sign(
-      {
-        user: author._id,
-      },
-      emailSecret,
-      {
-        expiresIn: "1d",
-      }
-    );
-
-    const urlT = "https://shiny-ox-leotard.cyclic.app";
-    // const urlT = "http:///localhost:1337";
-
-    const url = `${urlT}/confirmation/${emailToken}`;
-
-    await transporter.sendMail({
-      from: "Satwik , <lioneljames123@gmail.com>",
-      to: author.email,
-      subject: "Email Confirm Kariye madam sir",
-      html: ` To confirm the email click on this goddamn link : <a href="${url}">Verify</a>`,
-    });
+    await sendEmail({ user: author._id, email: author.email });
 
     res.json(author);
   } catch (ex) {
@@ -162,7 +98,6 @@ async function createAuthor(req, res, next) {
 }
 
 async function updateAuthor(req, res) {
-  // await redis.del("blogList");
   if (req.query.use === "list") {
     const { id: blogId } = req.body;
 
@@ -221,15 +156,14 @@ async function updateComment(req, res) {
 }
 
 async function followAuthor(req, res) {
-  // body will follow params
   const author = await Author.follow(req.body.id, req.params.id);
-  // await redis.del(author.username);
+
   res.json(author);
 }
 
 async function unfollowAuthor(req, res) {
   const author = await Author.unfollow(req.body.id, req.params.id);
-  // await redis.del(author.username);
+
   res.json(author);
 }
 
@@ -241,7 +175,6 @@ async function getFollowers(req, res) {
   res.json(followers);
 }
 async function uploadImage(req, res, next) {
-  // await redis.del("blogList");
   const fields = {
     name: req.body.name,
     file: req.file,
@@ -254,7 +187,10 @@ async function uploadImage(req, res, next) {
 
 async function confirmEmail(req, res, next) {
   try {
-    const { user: userId } = jwt.verify(req.params.token, emailSecret);
+    const { user: userId } = jwt.verify(
+      req.params.token,
+      process.env.EMAIL_SECRET
+    );
 
     const obj = {
       verified: true,
@@ -264,7 +200,8 @@ async function confirmEmail(req, res, next) {
     console.log(ex);
   }
 
-  res.redirect("https://inkwell.tech/login");
+  // res.redirect("http://localhost:3000/login");
+  res.redirect("https://inkwell.com/login");
 }
 
 function forbidden(next) {

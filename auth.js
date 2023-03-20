@@ -8,7 +8,7 @@ const autoCatch = require("./lib/auto-catch");
 
 const jwtSecret = process.env.JWT_SECRET || "mark it zero";
 const adminPassword = process.env.ADMIN_PASSWORD || "iamthewalrus";
-const jwtOpts = { algorithm: "HS256", expiresIn: "1d" };
+const jwtOpts = { algorithm: "HS256", expiresIn: "5d" };
 
 passport.use(adminStrategy());
 const authenticate = passport.authenticate("local", { session: false });
