@@ -41,12 +41,6 @@ app.put("/comments/:id", auth.ensureUser, api.updateComment);
 app.post("/follow/:id", auth.ensureUser, api.followAuthor);
 app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
 app.get("/followers/:id", api.getFollowers);
-app.post(
-  "/image",
-
-  mul.upload.single("testImage"),
-  api.uploadImage
-);
 
 app.get("/confirmation/:token", api.confirmEmail);
 app.post("/send-verificaion-mail", api.sendVerificationEmail);
