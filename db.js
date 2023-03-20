@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
-
-const dbURI =
-  "mongodb+srv://satwik12:satwik12@cluster0.byld6up.mongodb.net/test";
-
-// const dbURI = "mongodb://localhost/blogApp";
+require("dotenv").config();
+const dbURI = process.env.MODEL_KEY;
 
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
