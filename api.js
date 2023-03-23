@@ -201,7 +201,7 @@ async function confirmEmail(req, res, next) {
   }
 
   // res.redirect("http://localhost:3000/login");
-  res.redirect("https://inkwell.com/login");
+  res.redirect("https://inkwell.tech/login");
 }
 
 function forbidden(next) {
