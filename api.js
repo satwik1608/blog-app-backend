@@ -42,7 +42,9 @@ async function createBlog(req, res, next) {
 }
 
 async function listBlog(req, res) {
-  const blogs = await Blog.list();
+  const opts = req.query;
+  console.log(opts);
+  const blogs = await Blog.list(opts);
 
   res.json(blogs);
 }
