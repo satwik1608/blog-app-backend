@@ -66,11 +66,62 @@ async function create(fields) {
   return blog;
 }
 
-async function list() {
-  return await Blog.find()
+async function list(opts) {
+  const { tag, author, search, sort } = opts;
+
+  let sortQuery = {};
+
+  if (sort) {
+    sortQuery = { likes: 1 };
+  }
+
+  if (tag) {
+    const blog = await Blog.find({
+      tags: { $all: [tag] },
+    })
+      .sort(sortQuery)
+      .populate({
+        path: "author",
+      })
+      .select("-img")
+      .exec();
+
+    return blog;
+  }
+
+  if (author) {
+    const blog = await Blog.find({
+      author: author,
+    })
+      .sort(sortQuery)
+      .populate({
+        path: "author",
+      })
+      .select("-img")
+      .exec();
+
+    return blog;
+  }
+
+  if (search) {
+    const blog = await Blog.find({
+      title: { $regex: search, $options: "i" },
+    })
+      .sort(sortQuery)
+      .populate({
+        path: "author",
+      })
+      .select("-img")
+      .exec();
+
+    return blog;
+  }
+
+  return await Blog.find({})
     .populate({
       path: "author",
     })
+    .sort(sortQuery)
     .select("-img")
     .exec();
 }
