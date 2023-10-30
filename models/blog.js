@@ -69,10 +69,10 @@ async function create(fields) {
 async function list(opts) {
   const { tag, author, search, sort } = opts;
 
-  let sortQuery = {};
+  let sortQuery = { date: -1 };
 
   if (sort) {
-    sortQuery = { likes: 1 };
+    sortQuery = { likes: -1 };
   }
 
   if (tag) {

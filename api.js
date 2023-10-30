@@ -20,7 +20,7 @@ module.exports = {
   getAuthor,
   getAuthors,
   getAuthorId,
-
+  getAuthorBookmarks,
   getComment,
   createComment,
   updateComment,
@@ -36,14 +36,14 @@ async function createBlog(req, res, next) {
     const blog = await Blog.create(req.body);
     res.json(blog);
   } catch (ex) {
-    console.log(ex);
+    // console.log(ex);
     next(ex);
   }
 }
 
 async function listBlog(req, res) {
   const opts = req.query;
-  console.log(opts);
+  // console.log(opts);
   const blogs = await Blog.list(opts);
 
   res.json(blogs);
@@ -138,6 +138,14 @@ async function getAuthors(req, res) {
   const authors = await Author.list(search);
 
   res.json(authors);
+}
+
+async function getAuthorBookmarks(req, res) {
+  const id = req.params.id;
+  console.log("Seriously");
+  const bookmarks = await Author.getList(id);
+
+  res.json(bookmarks);
 }
 
 async function getComment(req, res) {

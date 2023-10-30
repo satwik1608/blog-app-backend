@@ -9,7 +9,7 @@ const autoCatch = require("./lib/auto-catch");
 const jwtSecret = process.env.JWT_SECRET || "mark it zero";
 const adminPassword = process.env.ADMIN_PASSWORD || "iamthewalrus";
 const jwtOpts = { algorithm: "HS256", expiresIn: "5d" };
-
+console.log("I am god");
 passport.use(adminStrategy());
 const authenticate = passport.authenticate("local", { session: false });
 
@@ -20,7 +20,8 @@ module.exports = {
 };
 
 async function login(req, res, next) {
-  console.log("veru", req.user);
+  // console.log("I am login");
+
   if (req.user.verified === false) {
     throw Object.assign(new Error("email not verified"), { statusCode: 401 });
 
@@ -40,9 +41,9 @@ async function login(req, res, next) {
 
 async function ensureUser(req, res, next) {
   const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
-
+  // console.log("I am Ensure User");
   const payload = await verify(jwtString);
-
+  //req.user comes from passport
   if (payload.username) {
     req.user = payload;
     if (req.user.username === "admin") req.isAdmin = true;
@@ -73,12 +74,13 @@ async function verify(jwtString = "") {
 
 function adminStrategy() {
   return new Strategy(async function (username, password, cb) {
+    console.log("I am adminStrategy");
+
     const isAdmin = username === "admin" && password === adminPassword;
     if (isAdmin) return cb(null, { username: "admin" }); // potential bug to be resolved
 
     try {
       const user = await Author.get(username);
-      // console.log("wowo", user);
       if (!user) return cb(null, false);
 
       const isUser = await bcrypt.compare(password, user.password);

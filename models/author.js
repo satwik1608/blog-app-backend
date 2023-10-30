@@ -13,6 +13,7 @@ module.exports = {
   edit,
   get,
   list,
+  getList,
   toList,
   removeFromList,
 };
@@ -83,6 +84,10 @@ async function find(id) {
     .populate("blogs")
 
     .exec();
+}
+
+async function getList(id) {
+  return await Author.find({ _id: id }, { lists: 1 }).populate("lists").exec();
 }
 
 async function list(search) {
@@ -180,7 +185,6 @@ async function toList(authorId, blogId) {
 
 async function removeFromList(authorId, blogId) {
   const author = await Author.findById(authorId);
-  // console.log(author);
   author.lists.remove(blogId);
 
   await author.save();

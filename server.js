@@ -33,6 +33,7 @@ app.get("/authors", api.getAuthors);
 app.get("/author", api.getAuthorId);
 app.put("/author/:id", api.updateAuthor);
 app.get("/author/:id", api.getAuthor);
+app.get("/author/bookmark/:id", api.getAuthorBookmarks);
 
 app.get("/comments", api.getComment);
 app.post("/comments", auth.ensureUser, api.createComment);
