@@ -38,6 +38,7 @@ const commentSchema = new db.Schema({
 const Comment = db.model("Comment", commentSchema);
 
 async function create(fields) {
+  console.log(fields);
   const comment = new Comment(fields);
 
   await comment.populate("blog author");

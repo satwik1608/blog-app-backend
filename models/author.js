@@ -111,7 +111,7 @@ async function list(search) {
   return data;
 }
 async function edit(id, change) {
-  const author = await Author.findById(id);
+  const author = await Author.findOne({ username: id });
 
   if (change.id) {
     if (change.id === 1) author.liked.push(change.liked);
@@ -174,7 +174,7 @@ async function followers(id) {
 }
 
 async function toList(authorId, blogId) {
-  const author = await Author.findById(authorId);
+  const author = await Author.findOne({ username: authorId });
 
   author.lists.push(blogId);
 
@@ -184,7 +184,7 @@ async function toList(authorId, blogId) {
 }
 
 async function removeFromList(authorId, blogId) {
-  const author = await Author.findById(authorId);
+  const author = await Author.findOne({ username: authorId });
   author.lists.remove(blogId);
 
   await author.save();

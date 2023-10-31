@@ -103,17 +103,17 @@ async function updateAuthor(req, res) {
   if (req.query.use === "list") {
     const { id: blogId } = req.body;
 
-    const author = await Author.toList(req.params.id, blogId);
+    const author = await Author.toList(req.user.username, blogId);
 
     res.json(author);
   } else if (req.query.use === "delist") {
     const { id: blogId } = req.body;
 
-    const author = await Author.removeFromList(req.params.id, blogId);
+    const author = await Author.removeFromList(req.user.username, blogId);
 
     res.json(author);
   } else {
-    const author = await Author.edit(req.params.id, req.body);
+    const author = await Author.edit(req.user.username, req.body);
 
     res.json(author);
   }
@@ -141,9 +141,7 @@ async function getAuthors(req, res) {
 }
 
 async function getAuthorBookmarks(req, res) {
-  const id = req.params.id;
-  console.log("Seriously");
-  const bookmarks = await Author.getList(id);
+  const bookmarks = await Author.getList(req.user.userId);
 
   res.json(bookmarks);
 }
@@ -154,7 +152,8 @@ async function getComment(req, res) {
   res.json(comments);
 }
 async function createComment(req, res) {
-  const comment = await Comment.create(req.body);
+  const fields = { ...req.body, author: req.user.userId };
+  const comment = await Comment.create(fields);
 
   res.json(comment);
 }
@@ -166,13 +165,13 @@ async function updateComment(req, res) {
 }
 
 async function followAuthor(req, res) {
-  const author = await Author.follow(req.body.id, req.params.id);
+  const author = await Author.follow(req.user.userId, req.body.id);
 
   res.json(author);
 }
 
 async function unfollowAuthor(req, res) {
-  const author = await Author.unfollow(req.body.id, req.params.id);
+  const author = await Author.unfollow(req.user.userId, req.body.id);
 
   res.json(author);
 }

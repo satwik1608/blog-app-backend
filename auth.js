@@ -24,13 +24,10 @@ async function login(req, res, next) {
 
   if (req.user.verified === false) {
     throw Object.assign(new Error("email not verified"), { statusCode: 401 });
-
-    next(err);
-
-    return;
   }
   const token = await sign({
     username: req.user.username,
+    userId: req.user.userId,
     verified: req.user.verified,
   });
 
@@ -41,7 +38,7 @@ async function login(req, res, next) {
 
 async function ensureUser(req, res, next) {
   const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
-  // console.log("I am Ensure User");
+  console.log("I am Ensure User");
   const payload = await verify(jwtString);
   //req.user comes from passport
   if (payload.username) {
@@ -85,7 +82,11 @@ function adminStrategy() {
 
       const isUser = await bcrypt.compare(password, user.password);
       if (isUser)
-        return cb(null, { username: user.username, verified: user.verified });
+        return cb(null, {
+          username: user.username,
+          verified: user.verified,
+          userId: user._id,
+        });
     } catch (err) {}
 
     cb(null, false);

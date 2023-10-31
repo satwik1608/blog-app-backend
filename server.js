@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.post("/login", auth.authenticate, auth.login);
-
+app.use(middleware.checker);
 app.get("/blogs", api.listBlog);
 app.get("/blogs/:id", api.getBlog);
 app.get("/blogImage/:id", api.getBlogImage);
@@ -31,16 +31,16 @@ app.delete("/blogs/:id", auth.ensureUser, api.deleteBlog);
 app.post("/author", api.createAuthor);
 app.get("/authors", api.getAuthors);
 app.get("/author", api.getAuthorId);
-app.put("/author/:id", api.updateAuthor);
+app.put("/author", auth.ensureUser, api.updateAuthor);
+app.get("/author/bookmark", auth.ensureUser, api.getAuthorBookmarks);
 app.get("/author/:id", api.getAuthor);
-app.get("/author/bookmark/:id", api.getAuthorBookmarks);
 
 app.get("/comments", api.getComment);
 app.post("/comments", auth.ensureUser, api.createComment);
 app.put("/comments/:id", auth.ensureUser, api.updateComment);
 
-app.post("/follow/:id", auth.ensureUser, api.followAuthor);
-app.post("/unfollow/:id", auth.ensureUser, api.unfollowAuthor);
+app.post("/follow", auth.ensureUser, api.followAuthor);
+app.post("/unfollow", auth.ensureUser, api.unfollowAuthor);
 app.get("/followers/:id", api.getFollowers);
 
 app.get("/confirmation/:token", api.confirmEmail);

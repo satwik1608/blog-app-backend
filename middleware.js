@@ -5,6 +5,7 @@ module.exports = {
   notFound,
   handleError,
   handleValidationError,
+  checker,
 };
 
 function cors(req, res, next) {
@@ -22,6 +23,14 @@ function cors(req, res, next) {
     "Access-Control-Allow-Headers",
     "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
   );
+
+  next();
+}
+
+function checker(req, res, next) {
+  console.group("Request");
+  console.log(req.url);
+  console.groupEnd();
 
   next();
 }
