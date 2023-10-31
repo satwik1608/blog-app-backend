@@ -38,7 +38,7 @@ async function login(req, res, next) {
 
 async function ensureUser(req, res, next) {
   const jwtString = req.headers["x-auth-token"] || req.cookies.jwt;
-  console.log("I am Ensure User");
+  // console.log("I am Ensure User");
   const payload = await verify(jwtString);
   //req.user comes from passport
   if (payload.username) {

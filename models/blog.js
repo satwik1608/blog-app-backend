@@ -13,6 +13,7 @@ module.exports = {
   getImage,
   remove,
   find,
+  handleLike,
 };
 
 const blogSchema = new db.Schema({
@@ -124,6 +125,38 @@ async function list(opts) {
     .sort(sortQuery)
     .select("-img")
     .exec();
+}
+
+async function handleLike(userId, blogId, change) {
+  const session = await db.startSession();
+  let updatedAuthor = null;
+  try {
+    await session.withTransaction(async () => {
+      const blog = await Blog.findById(blogId, null, { session });
+      const author = await Author.findWithoutPopulate(userId, null, {
+        session,
+      });
+      console.log(author);
+      const likesBefore = blog.likes;
+      if (change === 1 && author.liked.indexOf(blogId) === -1) {
+        blog.likes = blog.likes + 1;
+
+        author.liked.push(blogId);
+      } else if (change === -1 && author.liked.indexOf(blogId) !== -1) {
+        blog.likes = blog.likes - 1;
+        author.liked.remove(blogId);
+      }
+
+      await blog.save();
+      await author.save();
+      const likesAfter = blog.likes;
+      updatedAuthor = author;
+    });
+  } finally {
+    await session.endSession();
+  }
+
+  if (updatedAuthor) return updatedAuthor;
 }
 
 async function get(id) {

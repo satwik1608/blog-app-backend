@@ -7,6 +7,7 @@ const SALT_ROUNDS = 10;
 module.exports = {
   create,
   find,
+  findWithoutPopulate,
   follow,
   unfollow,
   followers,
@@ -86,6 +87,10 @@ async function find(id) {
     .exec();
 }
 
+async function findWithoutPopulate(id) {
+  return await Author.findById(id);
+}
+
 async function getList(id) {
   return await Author.find({ _id: id }, { lists: 1 }).populate("lists").exec();
 }
@@ -112,15 +117,9 @@ async function list(search) {
 }
 async function edit(id, change) {
   const author = await Author.findOne({ username: id });
-
-  if (change.id) {
-    if (change.id === 1) author.liked.push(change.liked);
-    else if (change.id === -1) author.liked.remove(change.liked);
-  } else {
-    Object.keys(change).forEach(function (key) {
-      author[key] = change[key];
-    });
-  }
+  Object.keys(change).forEach(function (key) {
+    author[key] = change[key];
+  });
 
   await author.save();
 

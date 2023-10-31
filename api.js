@@ -12,6 +12,7 @@ module.exports = {
   createBlog,
   listBlog,
   editBlog,
+  toggleLike,
   deleteBlog,
   getBlog,
   getBlogImage,
@@ -67,6 +68,16 @@ async function editBlog(req, res) {
   const blog = await Blog.edit(req.params.id, change);
 
   res.json(blog);
+}
+
+async function toggleLike(req, res, next) {
+  const { blogId, change } = req.body;
+  try {
+    const author = await Blog.handleLike(req.user.userId, blogId, change);
+    res.json(author);
+  } catch (ex) {
+    next(ex);
+  }
 }
 
 async function deleteBlog(req, res) {

@@ -30,6 +30,7 @@ function cors(req, res, next) {
 function checker(req, res, next) {
   console.group("Request");
   console.log(req.url);
+  console.log(req.body);
   console.groupEnd();
 
   next();
