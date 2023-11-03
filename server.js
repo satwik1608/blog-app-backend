@@ -22,6 +22,7 @@ app.use(cookieParser());
 app.post("/login", auth.authenticate, auth.login);
 app.use(middleware.checker);
 app.get("/blogs", api.listBlog);
+app.get("/blogs/trending", api.getTrendingBlogs);
 app.get("/blogs/:id", api.getBlog);
 app.get("/blogImage/:id", api.getBlogImage);
 app.post("/blogs", auth.ensureUser, api.createBlog);

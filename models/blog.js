@@ -9,6 +9,7 @@ module.exports = {
   create,
   edit,
   list,
+  listTrending,
   get,
   getImage,
   remove,
@@ -63,6 +64,19 @@ async function create(fields) {
   await author.save();
 
   await blog.save();
+
+  return blog;
+}
+
+async function listTrending() {
+  const blog = await Blog.find()
+    .populate({
+      path: "author",
+    })
+    .sort({ likes: -1 })
+    .limit(8)
+    .select("-img")
+    .exec();
 
   return blog;
 }
@@ -136,7 +150,6 @@ async function handleLike(userId, blogId, change) {
       const author = await Author.findWithoutPopulate(userId, null, {
         session,
       });
-      console.log(author);
       const likesBefore = blog.likes;
       if (change === 1 && author.liked.indexOf(blogId) === -1) {
         blog.likes = blog.likes + 1;
@@ -150,6 +163,7 @@ async function handleLike(userId, blogId, change) {
       await blog.save();
       await author.save();
       const likesAfter = blog.likes;
+      console.log({ likesBefore, likesAfter });
       updatedAuthor = author;
     });
   } finally {

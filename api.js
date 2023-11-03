@@ -16,6 +16,7 @@ module.exports = {
   deleteBlog,
   getBlog,
   getBlogImage,
+  getTrendingBlogs,
   createAuthor,
   updateAuthor,
   getAuthor,
@@ -55,7 +56,11 @@ async function getBlog(req, res) {
 
   res.json(blog);
 }
+async function getTrendingBlogs(req, res) {
+  const blog = await Blog.listTrending();
 
+  res.json(blog);
+}
 async function getBlogImage(req, res) {
   const blog = await Blog.getImage(req.params.id);
 
