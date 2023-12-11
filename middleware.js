@@ -29,8 +29,9 @@ function cors(req, res, next) {
 
 function checker(req, res, next) {
   // console.group("Request");
-  // console.log(req.url);
-  // console.log(req.body);
+  // console.log(req.method, req.url);
+  // // console.log(req.body);
+
   // console.groupEnd();
 
   next();
@@ -38,8 +39,6 @@ function checker(req, res, next) {
 
 function handleError(err, req, res, next) {
   if (res.headersSent) return next(err);
-
-  if (!err.statusCode) console.error(err);
 
   const statusCode = err.statusCode || 500;
   const errorMessage =
@@ -53,6 +52,7 @@ function notFound(req, res) {
 }
 
 function handleValidationError(err, req, res, next) {
+  console.log(err.name);
   if (err.name !== "ValidationError") return next(err);
 
   res.status(400).json({ error: err._message, errorDetails: err.errors });
