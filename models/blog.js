@@ -137,6 +137,7 @@ async function list(opts) {
       path: "author",
     })
     .sort(sortQuery)
+    .sort(sortQuery)
     .select("-img")
     .exec();
 }
