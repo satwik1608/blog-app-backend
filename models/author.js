@@ -117,6 +117,7 @@ async function list(search) {
 }
 async function edit(id, change) {
   const author = await Author.findOne({ username: id });
+  // console.log("author", author, change);
   Object.keys(change).forEach(function (key) {
     author[key] = change[key];
   });

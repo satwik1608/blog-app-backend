@@ -220,7 +220,8 @@ async function confirmEmail(req, res, next) {
     const obj = {
       verified: true,
     };
-    await Author.edit(userId, obj);
+    const author = await Author.find(userId);
+    await Author.edit(author.username, obj);
   } catch (ex) {
     console.log(ex);
   }
